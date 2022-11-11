@@ -1,12 +1,11 @@
 import cv2
 import numpy as np
 
-cap = cv2.VideoCapture('Cars.mp4')
+cap = cv2.VideoCapture('bridge.mp4')
 net = cv2.dnn.readNetFromONNX("yolov5n.onnx")
 file = open("coco.txt","r")
 classes = file.read().split('\n')
 print(classes)
-
 while True:
     img = cap.read()[1]
     if img is None:
@@ -15,6 +14,19 @@ while True:
     blob = cv2.dnn.blobFromImage(img,scalefactor= 1/255,size=(640,640),mean=[0,0,0],swapRB= True, crop= False)
     net.setInput(blob)
     detections = net.forward()[0]
+    print(img)
+    print(type(img))
+    ''' 
+    [[ 46  44  38]
+    [ 58  56  50]
+    [ 70  69  63]
+    ...
+    [ 10   9   6]
+    [ 11  10   8]
+    [ 12  10   9]]]
+    <class 'numpy.ndarray'>'''
+
+
   
 
     # cx,cy , w,h, confidence, 80 class_scores
@@ -55,6 +67,7 @@ while True:
         text = label + "{:.2f}".format(conf)
         cv2.rectangle(img,(x1,y1),(x1+w,y1+h),(255,0,0),2)
         cv2.putText(img, text, (x1,y1-2),cv2.FONT_HERSHEY_COMPLEX, 0.7,(255,0,255),2)
+
 
     cv2.imshow("VIDEO",img)
     k = cv2.waitKey(10)
